@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Task } from '@prisma/client';
-import { CreateTaskDto } from '@src/commons/dto/tasks/create-task.dto';
+import { CreateTaskDto } from '@src/commons/dto/create-task.dto';
+import { TaskQueryDto } from '@src/commons/dto/list-task.dto';
 import { TaskController } from '@src/controllers/task.controller';
 import { TaskService } from '@src/services/task.service';
+import { Response } from 'express';
 
 describe('TaskController', () => {
   let taskController: TaskController;
@@ -10,7 +12,12 @@ describe('TaskController', () => {
   const taskServiceMock = {
     createTask: jest.fn(),
     findTask: jest.fn(),
+    listTasks: jest.fn(),
   };
+
+  const responseMock = {
+    set: jest.fn(),
+  } as unknown as jest.Mocked<Response>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,6 +33,7 @@ describe('TaskController', () => {
     taskController = module.get(TaskController);
   });
 
+  /* eslint-disable @typescript-eslint/unbound-method */
   describe('createTask', () => {
     it('should call taskService.createTask with the correct parameters', async () => {
       const createTaskDto: CreateTaskDto = {
@@ -73,6 +81,84 @@ describe('TaskController', () => {
 
       expect(taskServiceMock.findTask).toHaveBeenCalledTimes(1);
       expect(taskServiceMock.findTask).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('listTasks', () => {
+    it('should return a list of tasks and set pagination headers', async () => {
+      const mockTasks: Task[] = [
+        {
+          id: 1,
+          title: 'Task 1',
+          description: 'Description 1',
+          status: 'active',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+        },
+        {
+          id: 2,
+          title: 'Task 2',
+          description: 'Description 2',
+          status: 'done',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+        },
+      ];
+
+      const query: TaskQueryDto = { status: 'active', page: 1, limit: 10 };
+      const total = 20;
+
+      taskServiceMock.listTasks.mockResolvedValue({ tasks: mockTasks, total });
+
+      const result = await taskController.listTasks(query, responseMock);
+
+      expect(result).toEqual(mockTasks);
+      expect(taskServiceMock.listTasks).toHaveBeenCalledTimes(1);
+      expect(taskServiceMock.listTasks).toHaveBeenCalledWith(query);
+
+      expect(responseMock.set).toHaveBeenCalledWith('X-Current-Page', '1');
+      expect(responseMock.set).toHaveBeenCalledWith('X-Page-Size', '10');
+      expect(responseMock.set).toHaveBeenCalledWith('X-Total-Pages', '2');
+    });
+
+    it('should use default values for page and limit when not provided', async () => {
+      const mockTasks: Task[] = [
+        {
+          id: 1,
+          title: 'Task 1',
+          description: 'Description 1',
+          status: 'active',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+        },
+        {
+          id: 2,
+          title: 'Task 2',
+          description: 'Description 2',
+          status: 'done',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+        },
+      ];
+
+      const query: TaskQueryDto = { status: 'active' };
+      const total = 15;
+
+      taskServiceMock.listTasks.mockResolvedValue({ tasks: mockTasks, total });
+
+      const result = await taskController.listTasks(query, responseMock);
+
+      expect(result).toEqual(mockTasks);
+      expect(taskServiceMock.listTasks).toHaveBeenCalledTimes(1);
+      expect(taskServiceMock.listTasks).toHaveBeenCalledWith(query);
+
+      expect(responseMock.set).toHaveBeenCalledWith('X-Current-Page', '1');
+      expect(responseMock.set).toHaveBeenCalledWith('X-Page-Size', '10');
+      expect(responseMock.set).toHaveBeenCalledWith('X-Total-Pages', '2');
     });
   });
 });

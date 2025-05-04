@@ -18,4 +18,12 @@ export class TaskRepository {
       },
     });
   }
+
+  async listTasks(params?: Prisma.TaskFindManyArgs): Promise<Task[]> {
+    return this.prisma.task.findMany(params);
+  }
+
+  async countTasks(params: Prisma.TaskCountArgs): Promise<number> {
+    return this.prisma.task.count(params);
+  }
 }

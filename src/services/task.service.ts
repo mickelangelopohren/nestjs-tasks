@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Task } from '@prisma/client';
-import { CreateTaskDto } from '@src/commons/dto/tasks/create-task.dto';
+import { CreateTaskDto } from '@src/commons/dto/create-task.dto';
+import { TaskQueryDto } from '@src/commons/dto/list-task.dto';
 import { TaskRepository } from '@src/repositories/task.repository';
 
 @Injectable()
@@ -19,5 +20,24 @@ export class TaskService {
     }
 
     return task;
+  }
+
+  async listTasks(
+    query: TaskQueryDto,
+  ): Promise<{ tasks: Task[]; total: number }> {
+    const { page = 1, limit = 10, ...filter } = query;
+
+    const skip = (page - 1) * limit;
+
+    const [tasks, total] = await Promise.all([
+      this.taskRepository.listTasks({
+        where: filter,
+        skip,
+        take: limit,
+      }),
+      this.taskRepository.countTasks({ where: filter }),
+    ]);
+
+    return { tasks, total };
   }
 }

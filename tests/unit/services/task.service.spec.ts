@@ -1,14 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateTaskDto } from '@src/commons/dto/tasks/create-task.dto';
+import { Task } from '@prisma/client';
+import { CreateTaskDto } from '@src/commons/dto/create-task.dto';
+import { TaskQueryDto } from '@src/commons/dto/list-task.dto';
 import { TaskRepository } from '@src/repositories/task.repository';
 import { TaskService } from '@src/services/task.service';
 
 describe('TaskService', () => {
   let taskService: TaskService;
 
-  const taskRepository = {
+  const taskRepositoryMock = {
     createTask: jest.fn(),
     findTask: jest.fn(),
+    listTasks: jest.fn(),
+    countTasks: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -18,7 +22,7 @@ describe('TaskService', () => {
         TaskService,
         {
           provide: TaskRepository,
-          useValue: taskRepository,
+          useValue: taskRepositoryMock,
         },
       ],
     }).compile();
@@ -29,7 +33,7 @@ describe('TaskService', () => {
   describe('createTask', () => {
     it('should call task repository', async () => {
       const repoResult = {};
-      taskRepository.createTask.mockResolvedValue(repoResult);
+      taskRepositoryMock.createTask.mockResolvedValue(repoResult);
 
       const data: CreateTaskDto = {
         title: 'Test task',
@@ -40,8 +44,8 @@ describe('TaskService', () => {
       const result = await taskService.createTask(data);
 
       expect(result).toBe(repoResult);
-      expect(taskRepository.createTask).toHaveBeenCalledTimes(1);
-      expect(taskRepository.createTask).toHaveBeenCalledWith(data);
+      expect(taskRepositoryMock.createTask).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.createTask).toHaveBeenCalledWith(data);
     });
   });
 
@@ -57,24 +61,111 @@ describe('TaskService', () => {
         deletedAt: null,
       };
 
-      taskRepository.findTask.mockResolvedValue(mockTask);
+      taskRepositoryMock.findTask.mockResolvedValue(mockTask);
 
       const result = await taskService.findTask(1);
 
       expect(result).toEqual(mockTask);
-      expect(taskRepository.findTask).toHaveBeenCalledTimes(1);
-      expect(taskRepository.findTask).toHaveBeenCalledWith({ id: 1 });
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledWith({ id: 1 });
     });
 
     it('should throw an error if the task does not exist', async () => {
-      taskRepository.findTask.mockResolvedValue(null);
+      taskRepositoryMock.findTask.mockResolvedValue(null);
 
       await expect(taskService.findTask(1)).rejects.toThrow(
         'Task with ID 1 not found',
       );
 
-      expect(taskRepository.findTask).toHaveBeenCalledTimes(1);
-      expect(taskRepository.findTask).toHaveBeenCalledWith({ id: 1 });
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledWith({ id: 1 });
+    });
+  });
+
+  describe('listTasks', () => {
+    it('should return tasks and total count', async () => {
+      const mockTasks: Task[] = [
+        {
+          id: 1,
+          title: 'Task 1',
+          description: 'Description 1',
+          status: 'active',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+        },
+        {
+          id: 2,
+          title: 'Task 2',
+          description: 'Description 2',
+          status: 'completed',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+        },
+      ];
+
+      const query: TaskQueryDto = { status: 'active', page: 2, limit: 5 };
+
+      taskRepositoryMock.listTasks.mockResolvedValue(mockTasks);
+      taskRepositoryMock.countTasks.mockResolvedValue(12);
+
+      const result = await taskService.listTasks(query);
+
+      expect(result).toEqual({ tasks: mockTasks, total: 12 });
+      expect(taskRepositoryMock.listTasks).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.listTasks).toHaveBeenCalledWith({
+        where: { status: 'active' },
+        skip: 5,
+        take: 5,
+      });
+      expect(taskRepositoryMock.countTasks).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.countTasks).toHaveBeenCalledWith({
+        where: { status: 'active' },
+      });
+    });
+
+    it('should use default values for page and limit when not provided', async () => {
+      const mockTasks: Task[] = [
+        {
+          id: 1,
+          title: 'Task 1',
+          description: 'Description 1',
+          status: 'active',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+        },
+        {
+          id: 2,
+          title: 'Task 2',
+          description: 'Description 2',
+          status: 'done',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+        },
+      ];
+
+      const query: TaskQueryDto = { status: 'active' };
+
+      taskRepositoryMock.listTasks.mockResolvedValue(mockTasks);
+      taskRepositoryMock.countTasks.mockResolvedValue(15);
+
+      const result = await taskService.listTasks(query);
+
+      expect(result).toEqual({ tasks: mockTasks, total: 15 });
+      expect(taskRepositoryMock.listTasks).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.listTasks).toHaveBeenCalledWith({
+        where: { status: 'active' },
+        skip: 0,
+        take: 10,
+      });
+
+      expect(taskRepositoryMock.countTasks).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.countTasks).toHaveBeenCalledWith({
+        where: { status: 'active' },
+      });
     });
   });
 });
