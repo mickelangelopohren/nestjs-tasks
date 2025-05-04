@@ -9,4 +9,13 @@ export class TaskRepository {
   async createTask(data: Prisma.TaskCreateInput): Promise<Task> {
     return this.prisma.task.create({ data });
   }
+
+  async findTask(where: Prisma.TaskWhereUniqueInput): Promise<Task | null> {
+    return this.prisma.task.findFirst({
+      where: {
+        ...where,
+        deletedAt: null,
+      },
+    });
+  }
 }

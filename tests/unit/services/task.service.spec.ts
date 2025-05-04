@@ -8,6 +8,7 @@ describe('TaskService', () => {
 
   const taskRepository = {
     createTask: jest.fn(),
+    findTask: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -41,6 +42,39 @@ describe('TaskService', () => {
       expect(result).toBe(repoResult);
       expect(taskRepository.createTask).toHaveBeenCalledTimes(1);
       expect(taskRepository.createTask).toHaveBeenCalledWith(data);
+    });
+  });
+
+  describe('findTask', () => {
+    it('should return a task if it exists', async () => {
+      const mockTask = {
+        id: 1,
+        title: 'Test Task',
+        description: 'Test Description',
+        status: 'active',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      taskRepository.findTask.mockResolvedValue(mockTask);
+
+      const result = await taskService.findTask(1);
+
+      expect(result).toEqual(mockTask);
+      expect(taskRepository.findTask).toHaveBeenCalledTimes(1);
+      expect(taskRepository.findTask).toHaveBeenCalledWith({ id: 1 });
+    });
+
+    it('should throw an error if the task does not exist', async () => {
+      taskRepository.findTask.mockResolvedValue(null);
+
+      await expect(taskService.findTask(1)).rejects.toThrow(
+        'Task with ID 1 not found',
+      );
+
+      expect(taskRepository.findTask).toHaveBeenCalledTimes(1);
+      expect(taskRepository.findTask).toHaveBeenCalledWith({ id: 1 });
     });
   });
 });
