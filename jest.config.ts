@@ -15,21 +15,21 @@ const base: Config.InitialOptions = {
 };
 
 const config: Config.InitialOptions = {
+  collectCoverageFrom: ['src/**/*.(t|j)s', '!src/main.ts'],
+  coverageDirectory: '<rootDir>/coverage',
+  coverageThreshold: {
+    global: {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+  },
   projects: [
     {
       ...base,
       displayName: 'unit',
       testMatch: ['<rootDir>/tests/unit/**/*.spec.ts'],
-      collectCoverageFrom: ['src/**/*.(t|j)s'],
-      coverageDirectory: '<rootDir>/coverage',
-      coverageThreshold: {
-        global: {
-          branches: 100,
-          functions: 100,
-          lines: 100,
-          statements: 100,
-        },
-      },
     },
     {
       ...base,
