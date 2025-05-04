@@ -13,6 +13,7 @@ describe('TaskRepository', () => {
       findFirst: jest.fn(),
       findMany: jest.fn(),
       count: jest.fn(),
+      update: jest.fn(),
     },
   };
 
@@ -140,6 +141,37 @@ describe('TaskRepository', () => {
       expect(result).toEqual(12);
       expect(prismaMock.task.count).toHaveBeenCalledTimes(1);
       expect(prismaMock.task.count).toHaveBeenCalledWith(params);
+    });
+  });
+
+  describe('updateTask', () => {
+    it('should update the task and return the updated task', async () => {
+      const id = 1;
+      const updateData: Partial<Task> = { title: 'Updated Task' };
+
+      const updatedTask: Task = {
+        id,
+        title: 'Updated Task',
+        description: 'Updated Description',
+        status: 'active',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      prismaMock.task.update.mockResolvedValue(updatedTask);
+
+      const result = await taskRepository.updateTask({
+        where: { id },
+        data: updateData,
+      });
+
+      expect(result).toEqual(updatedTask);
+      expect(prismaMock.task.update).toHaveBeenCalledTimes(1);
+      expect(prismaMock.task.update).toHaveBeenCalledWith({
+        where: { id },
+        data: updateData,
+      });
     });
   });
 });

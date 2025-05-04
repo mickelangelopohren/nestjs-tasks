@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Task } from '@prisma/client';
 import { CreateTaskDto } from '@src/commons/dto/create-task.dto';
 import { TaskQueryDto } from '@src/commons/dto/list-task.dto';
+import { UpdateTaskDto } from '@src/commons/dto/update-task.dto';
 import { TaskController } from '@src/controllers/task.controller';
 import { TaskService } from '@src/services/task.service';
 import { Response } from 'express';
@@ -13,6 +14,7 @@ describe('TaskController', () => {
     createTask: jest.fn(),
     findTask: jest.fn(),
     listTasks: jest.fn(),
+    updateTask: jest.fn(),
   };
 
   const responseMock = {
@@ -159,6 +161,37 @@ describe('TaskController', () => {
       expect(responseMock.set).toHaveBeenCalledWith('X-Current-Page', '1');
       expect(responseMock.set).toHaveBeenCalledWith('X-Page-Size', '10');
       expect(responseMock.set).toHaveBeenCalledWith('X-Total-Pages', '2');
+    });
+  });
+
+  describe('updateTask', () => {
+    it('should call taskService.updateTask with the correct parameters and return the updated task', async () => {
+      const id = 1;
+      const updateTaskDto: UpdateTaskDto = {
+        title: 'Updated Task',
+        description: 'Updated Description',
+      };
+
+      const updatedTask: Task = {
+        id,
+        title: 'Updated Task',
+        description: 'Updated Description',
+        status: 'active',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      taskServiceMock.updateTask.mockResolvedValue(updatedTask);
+
+      const result = await taskController.updateTask(id, updateTaskDto);
+
+      expect(result).toEqual(updatedTask);
+      expect(taskServiceMock.updateTask).toHaveBeenCalledTimes(1);
+      expect(taskServiceMock.updateTask).toHaveBeenCalledWith(
+        id,
+        updateTaskDto,
+      );
     });
   });
 });

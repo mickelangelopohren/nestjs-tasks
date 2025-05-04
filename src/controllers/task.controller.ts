@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   Res,
@@ -12,6 +13,7 @@ import {
 import { Task } from '@prisma/client';
 import { CreateTaskDto } from '@src/commons/dto/create-task.dto';
 import { TaskQueryDto } from '@src/commons/dto/list-task.dto';
+import { UpdateTaskDto } from '@src/commons/dto/update-task.dto';
 import { TaskService } from '@src/services/task.service';
 import { Response } from 'express';
 
@@ -47,5 +49,14 @@ export class TaskController {
     res.set('X-Total-Pages', totalPages.toString());
 
     return tasks;
+  }
+
+  @Patch(':id')
+  @HttpCode(HttpStatus.OK)
+  async updateTask(
+    @Param('id') id: number,
+    @Body() updateTaskDto: UpdateTaskDto,
+  ): Promise<Task> {
+    return this.taskService.updateTask(id, updateTaskDto);
   }
 }

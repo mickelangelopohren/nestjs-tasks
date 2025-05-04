@@ -26,4 +26,15 @@ export class TaskRepository {
   async countTasks(params: Prisma.TaskCountArgs): Promise<number> {
     return this.prisma.task.count(params);
   }
+
+  async updateTask(params: {
+    where: Prisma.TaskWhereUniqueInput;
+    data: Prisma.TaskUpdateInput;
+  }): Promise<Task> {
+    const { where, data } = params;
+    return this.prisma.task.update({
+      data,
+      where,
+    });
+  }
 }

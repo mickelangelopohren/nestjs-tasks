@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Task } from '@prisma/client';
 import { CreateTaskDto } from '@src/commons/dto/create-task.dto';
@@ -13,6 +14,7 @@ describe('TaskService', () => {
     findTask: jest.fn(),
     listTasks: jest.fn(),
     countTasks: jest.fn(),
+    updateTask: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -165,6 +167,58 @@ describe('TaskService', () => {
       expect(taskRepositoryMock.countTasks).toHaveBeenCalledTimes(1);
       expect(taskRepositoryMock.countTasks).toHaveBeenCalledWith({
         where: { status: 'active' },
+      });
+    });
+  });
+
+  describe('updateTask', () => {
+    it('should throw a NotFoundException if the task does not exist', async () => {
+      const id = 1;
+      const updateData: Partial<Task> = { title: 'Updated Task' };
+
+      taskRepositoryMock.findTask.mockResolvedValue(null);
+
+      await expect(taskService.updateTask(id, updateData)).rejects.toThrow(
+        new NotFoundException(`Task with ID ${id} not found`),
+      );
+
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledWith({ id });
+      expect(taskRepositoryMock.updateTask).not.toHaveBeenCalled();
+    });
+
+    it('should update the task and return the updated task', async () => {
+      const id = 1;
+      const updateData: Partial<Task> = { title: 'Updated Task' };
+
+      const existingTask: Task = {
+        id,
+        title: 'Old Task',
+        description: 'Old Description',
+        status: 'active',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      const updatedTask: Task = {
+        ...existingTask,
+        ...updateData,
+        updatedAt: new Date(),
+      };
+
+      taskRepositoryMock.findTask.mockResolvedValue(existingTask);
+      taskRepositoryMock.updateTask.mockResolvedValue(updatedTask);
+
+      const result = await taskService.updateTask(id, updateData);
+
+      expect(result).toEqual(updatedTask);
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledWith({ id });
+      expect(taskRepositoryMock.updateTask).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.updateTask).toHaveBeenCalledWith({
+        where: { id },
+        data: updateData,
       });
     });
   });

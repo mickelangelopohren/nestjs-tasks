@@ -40,4 +40,14 @@ export class TaskService {
 
     return { tasks, total };
   }
+
+  async updateTask(id: number, updateData: Partial<Task>): Promise<Task> {
+    const task = await this.taskRepository.findTask({ id });
+
+    if (!task) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+
+    return this.taskRepository.updateTask({ where: { id }, data: updateData });
+  }
 }
