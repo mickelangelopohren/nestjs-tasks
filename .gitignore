@@ -60,3 +60,5 @@ generated/prisma/
 .prisma
 /prisma/db/*.db*
 /prisma/*.db*
+/prisma/migrations
+/prisma/dev.db

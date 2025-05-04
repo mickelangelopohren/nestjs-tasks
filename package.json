@@ -14,11 +14,11 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest --selectProjects unit",
+    "test": "jest --selectProjects unit --no-cache",
     "test:watch": "npm run test -- --watch",
     "test:cov": "npm run test -- --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --selectProjects e2e",
+    "test:e2e": "jest --selectProjects e2e --no-cache",
     "prisma:gen": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
     "prisma:status": "prisma migrate status"

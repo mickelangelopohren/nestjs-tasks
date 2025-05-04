@@ -8,8 +8,6 @@ const base: Config.InitialOptions = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  collectCoverageFrom: ['**/*.(t|j)s'],
-  coverageDirectory: '<rootDir>/coverage',
   testEnvironment: 'node',
   moduleNameMapper: {
     '^@src/(.*)$': '<rootDir>/src/$1',
@@ -21,12 +19,22 @@ const config: Config.InitialOptions = {
     {
       ...base,
       displayName: 'unit',
-      testMatch: ['<rootDir>/test/unit/**/*.spec.ts'],
+      testMatch: ['<rootDir>/tests/unit/**/*.spec.ts'],
+      collectCoverageFrom: ['src/**/*.(t|j)s'],
+      coverageDirectory: '<rootDir>/coverage',
+      coverageThreshold: {
+        global: {
+          branches: 100,
+          functions: 100,
+          lines: 100,
+          statements: 100,
+        },
+      },
     },
     {
       ...base,
       displayName: 'e2e',
-      testMatch: ['<rootDir>/test/e2e/**/*.spec.ts'],
+      testMatch: ['<rootDir>/tests/e2e/**/*.spec.ts'],
     },
   ],
 };
