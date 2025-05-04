@@ -15,6 +15,7 @@ describe('TaskController', () => {
     findTask: jest.fn(),
     listTasks: jest.fn(),
     updateTask: jest.fn(),
+    deleteTask: jest.fn(),
   };
 
   const responseMock = {
@@ -192,6 +193,17 @@ describe('TaskController', () => {
         id,
         updateTaskDto,
       );
+    });
+  });
+
+  describe('deleteTask', () => {
+    it('should call deleteTask with the correct parameters', async () => {
+      const id = 1;
+
+      await taskController.deleteTask(id);
+
+      expect(taskServiceMock.deleteTask).toHaveBeenCalledTimes(1);
+      expect(taskServiceMock.deleteTask).toHaveBeenCalledWith(id);
     });
   });
 });

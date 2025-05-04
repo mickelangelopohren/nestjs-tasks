@@ -42,12 +42,14 @@ export class TaskService {
   }
 
   async updateTask(id: number, updateData: Partial<Task>): Promise<Task> {
-    const task = await this.taskRepository.findTask({ id });
-
-    if (!task) {
-      throw new NotFoundException(`Task with ID ${id} not found`);
-    }
+    await this.findTask(id);
 
     return this.taskRepository.updateTask({ where: { id }, data: updateData });
+  }
+
+  async deleteTask(id: number): Promise<Task> {
+    await this.findTask(id);
+
+    return this.taskRepository.softDeleteTask({ id });
   }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -58,5 +59,11 @@ export class TaskController {
     @Body() updateTaskDto: UpdateTaskDto,
   ): Promise<Task> {
     return this.taskService.updateTask(id, updateTaskDto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteTask(@Param('id') id: number): Promise<void> {
+    await this.taskService.deleteTask(id);
   }
 }

@@ -37,4 +37,13 @@ export class TaskRepository {
       where,
     });
   }
+
+  async softDeleteTask(where: Prisma.TaskWhereUniqueInput): Promise<Task> {
+    return this.updateTask({
+      where,
+      data: {
+        deletedAt: new Date().toISOString(),
+      },
+    });
+  }
 }

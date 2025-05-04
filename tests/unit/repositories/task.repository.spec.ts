@@ -174,4 +174,32 @@ describe('TaskRepository', () => {
       });
     });
   });
+
+  describe('softDeleteTask', () => {
+    it('should soft delete the task and return the updated task', async () => {
+      const id = 1;
+      const now = new Date().toISOString();
+
+      const updatedTask: Task = {
+        id,
+        title: 'Test Task',
+        description: 'Test Description',
+        status: 'active',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: new Date(now),
+      };
+
+      prismaMock.task.update.mockResolvedValue(updatedTask);
+
+      const result = await taskRepository.softDeleteTask({ id });
+
+      expect(result).toEqual(updatedTask);
+      expect(prismaMock.task.update).toHaveBeenCalledTimes(1);
+      expect(prismaMock.task.update).toHaveBeenCalledWith({
+        where: { id },
+        data: { deletedAt: now },
+      });
+    });
+  });
 });

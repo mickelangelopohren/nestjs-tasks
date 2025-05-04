@@ -15,6 +15,7 @@ describe('TaskService', () => {
     listTasks: jest.fn(),
     countTasks: jest.fn(),
     updateTask: jest.fn(),
+    softDeleteTask: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -220,6 +221,46 @@ describe('TaskService', () => {
         where: { id },
         data: updateData,
       });
+    });
+  });
+
+  describe('deleteTask', () => {
+    it('should throw a NotFoundException if the task does not exist', async () => {
+      const id = 1;
+
+      taskRepositoryMock.findTask.mockResolvedValue(null);
+
+      await expect(taskService.deleteTask(id)).rejects.toThrow(
+        new NotFoundException(`Task with ID ${id} not found`),
+      );
+
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledWith({ id });
+      expect(taskRepositoryMock.softDeleteTask).not.toHaveBeenCalled();
+    });
+
+    it('should soft delete the task and return void', async () => {
+      const id = 1;
+
+      const existingTask = {
+        id,
+        title: 'Test Task',
+        description: 'Test Description',
+        status: 'active',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      taskRepositoryMock.findTask.mockResolvedValue(existingTask);
+      taskRepositoryMock.softDeleteTask.mockResolvedValue(existingTask);
+
+      await taskService.deleteTask(id);
+
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.findTask).toHaveBeenCalledWith({ id });
+      expect(taskRepositoryMock.softDeleteTask).toHaveBeenCalledTimes(1);
+      expect(taskRepositoryMock.softDeleteTask).toHaveBeenCalledWith({ id });
     });
   });
 });
