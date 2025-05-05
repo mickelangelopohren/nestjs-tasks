@@ -33,14 +33,14 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Create a new task' })
   @ApiResponse({
-    status: HttpStatus.CREATED,
+    status: HttpStatus.OK,
     description: 'Task successfully created',
   })
-  async createTask(@Body() createTaskDto: CreateTaskDto): Promise<void> {
-    await this.taskService.createTask(createTaskDto);
+  async createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+    return this.taskService.createTask(createTaskDto);
   }
 
   @Get(':id')
