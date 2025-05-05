@@ -7,7 +7,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "prebuild": "npm run prisma:gen",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -19,9 +18,11 @@
     "test:cov": "npm run test -- --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --selectProjects e2e --no-cache",
-    "prisma:gen": "prisma generate",
+    "prisma:create": "prisma migrate dev --create-only --name create_tables",
     "prisma:migrate": "prisma migrate deploy",
-    "prisma:status": "prisma migrate status"
+    "prisma:generate": "prisma generate",
+    "prisma:seed": "prisma db seed",
+    "prisma:dev": "npm run prisma:create && npm run prisma:migrate && npm run prisma:generate && npm run prisma:seed"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
