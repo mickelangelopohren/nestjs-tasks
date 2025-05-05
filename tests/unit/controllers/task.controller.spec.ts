@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Task } from '@prisma/client';
 import { CreateTaskDto } from '@src/commons/dto/create-task.dto';
 import { TaskQueryDto } from '@src/commons/dto/list-task.dto';
 import { UpdateTaskDto } from '@src/commons/dto/update-task.dto';
+import { Task } from '@src/commons/interface/task.interface';
 import { TaskController } from '@src/controllers/task.controller';
 import { TaskService } from '@src/services/task.service';
 import { Response } from 'express';

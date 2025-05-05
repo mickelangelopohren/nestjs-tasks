@@ -1,4 +1,8 @@
-import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -26,6 +30,11 @@ describe('AuthGuard', () => {
     getClass: jest.fn(),
   });
 
+  const loggerMock = {
+    error: jest.fn(),
+    warn: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -33,7 +42,10 @@ describe('AuthGuard', () => {
         { provide: JwtService, useValue: jwtServiceMock },
         { provide: Reflector, useValue: reflectorMock },
       ],
-    }).compile();
+    })
+      .overrideProvider(Logger)
+      .useValue(loggerMock)
+      .compile();
 
     authGuard = module.get<AuthGuard>(AuthGuard);
   });

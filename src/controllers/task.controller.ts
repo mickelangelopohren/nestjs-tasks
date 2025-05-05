@@ -17,12 +17,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Task } from '@prisma/client';
 import { CreateTaskDto } from '@src/commons/dto/create-task.dto';
 import { TaskQueryDto } from '@src/commons/dto/list-task.dto';
 import { UpdateTaskDto } from '@src/commons/dto/update-task.dto';
 import { PaginationHeaders } from '@src/commons/interface/auth.interface';
-import { TaskResponse } from '@src/commons/interface/task.interface';
+import { Task, TaskResponse } from '@src/commons/interface/task.interface';
 import { TaskService } from '@src/services/task.service';
 import { Response } from 'express';
 
