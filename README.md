@@ -15,6 +15,7 @@ Este projeto contém um CRUD de Tarefas com autenticação JWT. Foi desenvolvido
 - [Documentação Swagger](#documentação-swagger)
 - [Exemplos de Uso da API](#exemplos-de-uso-da-api)
 - [Observações](#observações)
+- [Postman Collection](#postman-collection)
 
 ## Pré-requisitos
 
@@ -171,3 +172,21 @@ curl --location 'http://localhost:3000/v1/auth/signin' \
 > [!NOTE]
 >
 > 3.  **Credenciais fixas**: As credenciais acima estão fixadas no banco e não podem ser alteradas via chamada.
+
+## Postman Collection
+
+Os arquivos da coleção do Postman e do ambiente estão localizados na pasta `postman` no diretório raiz do projeto.
+
+- **Caminho**: `postman/`
+- **Arquivos disponíveis**:
+  - `nestjs-tasks.postman_collection.json`: Contém as requisições configuradas para a API.
+  - `nestjs-tasks.postman_environment.json`: Contém as variáveis de ambiente para facilitar os testes.
+
+### Como importar no Postman
+
+1. Abra o Postman.
+2. Clique em **Import** no canto superior esquerdo.
+3. Selecione os arquivos da pasta `postman/`:
+   - Coleção: `nestjs-tasks.postman_collection.json`
+   - Ambiente: `nestjs-tasks.postman_environment.json`
+4. Após importar, selecione o ambiente no canto superior direito do Postman para utilizá-lo.
