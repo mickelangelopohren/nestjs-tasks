@@ -17,3 +17,10 @@ model Task {
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
 }
+
+model User {
+  id       Int     @id @default(autoincrement())
+  userName String  @unique
+  password String
+  role     String
+}
