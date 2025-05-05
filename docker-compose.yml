@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+    ports:
+      - '3000:${PORT:-3000}'
+    command: bash -c 'npm run prisma:dev && npm run start:dev'
