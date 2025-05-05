@@ -15,7 +15,7 @@ Este projeto contém um CRUD de Tarefas com autenticação JWT. Foi desenvolvido
 - [Documentação Swagger](#documentação-swagger)
 - [Exemplos de Uso da API](#exemplos-de-uso-da-api)
 - [Observações](#observações)
-- [Postman Collection](#postman-collection)
+- [Postman](#postman)
 
 ## Pré-requisitos
 
@@ -173,7 +173,7 @@ curl --location 'http://localhost:3000/v1/auth/signin' \
 >
 > 3.  **Credenciais fixas**: As credenciais acima estão fixadas no banco e não podem ser alteradas via chamada.
 
-## Postman Collection
+## Postman
 
 Os arquivos da coleção do Postman e do ambiente estão localizados na pasta `postman` no diretório raiz do projeto.
 
