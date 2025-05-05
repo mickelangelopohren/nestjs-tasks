@@ -20,7 +20,13 @@ export class TaskRepository {
   }
 
   async listTasks(params?: Prisma.TaskFindManyArgs): Promise<Task[]> {
-    return this.prisma.task.findMany(params);
+    return this.prisma.task.findMany({
+      ...params,
+      where: {
+        ...params?.where,
+        deletedAt: null,
+      },
+    });
   }
 
   async countTasks(params: Prisma.TaskCountArgs): Promise<number> {

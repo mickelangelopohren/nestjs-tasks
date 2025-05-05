@@ -120,7 +120,11 @@ describe('TaskRepository', () => {
         },
       ];
 
-      const params = { where: { status: 'active' }, skip: 5, take: 5 };
+      const params = {
+        where: { status: 'active', deletedAt: null },
+        skip: 5,
+        take: 5,
+      };
 
       prismaMock.task.findMany.mockResolvedValue(mockTasks);
 
@@ -178,7 +182,7 @@ describe('TaskRepository', () => {
   describe('softDeleteTask', () => {
     it('should soft delete the task and return the updated task', async () => {
       const id = 1;
-      const now = new Date().toISOString();
+      const now = new Date();
 
       const updatedTask: Task = {
         id,
@@ -187,7 +191,7 @@ describe('TaskRepository', () => {
         status: 'active',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: new Date(now),
+        deletedAt: now,
       };
 
       prismaMock.task.update.mockResolvedValue(updatedTask);
@@ -198,7 +202,7 @@ describe('TaskRepository', () => {
       expect(prismaMock.task.update).toHaveBeenCalledTimes(1);
       expect(prismaMock.task.update).toHaveBeenCalledWith({
         where: { id },
-        data: { deletedAt: now },
+        data: { deletedAt: now.toISOString() },
       });
     });
   });
