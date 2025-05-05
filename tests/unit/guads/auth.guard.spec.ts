@@ -41,11 +41,9 @@ describe('AuthGuard', () => {
         AuthGuard,
         { provide: JwtService, useValue: jwtServiceMock },
         { provide: Reflector, useValue: reflectorMock },
+        { provide: Logger, useValue: loggerMock },
       ],
-    })
-      .overrideProvider(Logger)
-      .useValue(loggerMock)
-      .compile();
+    }).compile();
 
     authGuard = module.get<AuthGuard>(AuthGuard);
   });

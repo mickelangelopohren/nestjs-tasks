@@ -13,12 +13,12 @@ import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private readonly logger = new Logger(AuthGuard.name);
   private readonly JWT_SECRET = process.env.JWT_SECRET;
 
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
+    private readonly logger: Logger,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

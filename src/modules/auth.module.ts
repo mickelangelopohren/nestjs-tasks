@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from '@src/controllers/auth.controller';
 import { AuthService } from '@src/services/auth.service';
@@ -11,7 +11,7 @@ import { AuthService } from '@src/services/auth.service';
       signOptions: { expiresIn: process.env.JWT_EXPIRATION },
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, Logger],
   controllers: [AuthController],
   exports: [AuthService],
 })

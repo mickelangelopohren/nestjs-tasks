@@ -8,13 +8,13 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
   private readonly INVALID_CREDENTIALS_ERROR = 'Invalid credentials';
   private readonly JWT_EXPIRATION = process.env.JWT_EXPIRATION || '3600s';
 
   constructor(
     private jwtService: JwtService,
     private prisma: PrismaDatabase,
+    private readonly logger: Logger,
   ) {}
 
   async validateUser(loginUserDto: SignInDto): Promise<Omit<User, 'password'>> {

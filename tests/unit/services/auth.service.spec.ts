@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaDatabase } from '@src/database/prisma.database';
@@ -18,12 +18,17 @@ describe('AuthService', () => {
     sign: jest.fn(),
   };
 
+  const loggerMock = {
+    log: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         { provide: PrismaDatabase, useValue: prismaMock },
         { provide: JwtService, useValue: jwtServiceMock },
+        { provide: Logger, useValue: loggerMock },
       ],
     }).compile();
 
@@ -113,6 +118,7 @@ describe('AuthService', () => {
       const authServiceInstance = new AuthService(
         jwtServiceMock as unknown as JwtService,
         prismaMock as unknown as PrismaDatabase,
+        loggerMock as unknown as Logger,
       );
 
       expect(authServiceInstance['JWT_EXPIRATION']).toBe('3600s');

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { TaskController } from '@src/controllers/task.controller';
 import { AuthGuard } from '@src/guards/auth.guard';
@@ -11,6 +11,7 @@ import { DatabaseModule } from './database.module';
   imports: [AuthModule, DatabaseModule],
   controllers: [TaskController],
   providers: [
+    Logger,
     TaskService,
     TaskRepository,
     {
