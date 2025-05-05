@@ -15,7 +15,6 @@ Este projeto contém um CRUD de Tarefas com autenticação JWT. Foi desenvolvido
 - [Documentação Swagger](#documentação-swagger)
 - [Exemplos de Uso da API](#exemplos-de-uso-da-api)
 - [Observações](#observações)
-- [Licença](#licença)
 
 ## Pré-requisitos
 
@@ -27,26 +26,31 @@ Este projeto contém um CRUD de Tarefas com autenticação JWT. Foi desenvolvido
 ## Executando no ambiente local (sem Docker)
 
 1. Clone o repositório:
+
    ```bash
    git clone https://github.com/mickelangelopohren/nestjs-tasks.git
    ```
 
 2. Entre na pasta do projeto:
+
    ```bash
    cd nestjs-tasks
    ```
 
 3. Instale as dependências do Node.js:
+
    ```bash
    npm install
    ```
 
 4. Crie um arquivo `.env`. Você pode usar o arquivo `.env.example` como base:
+
    ```bash
    cp .env.example .env
    ```
 
 5. Execute o comando abaixo para gerar a primeira migração, popular o banco de dados e gerar os arquivos do Prisma:
+
    ```bash
    npm run prisma:dev
    ```
@@ -59,11 +63,13 @@ Este projeto contém um CRUD de Tarefas com autenticação JWT. Foi desenvolvido
 ## Executando no ambiente local com Docker
 
 1. Clone o repositório:
+
    ```bash
    git clone https://github.com/mickelangelopohren/nestjs-tasks.git
    ```
 
 2. Entre na pasta do projeto:
+
    ```bash
    cd nestjs-tasks
    ```
@@ -85,11 +91,13 @@ O arquivo `.env` deve conter as seguintes variáveis:
 ## Executando os testes
 
 - Para testes unitários:
+
   ```bash
   npm run test
   ```
 
 - Para testes ponto-a-ponto (e2e):
+
   ```bash
   npm run test:e2e
   ```
@@ -107,11 +115,13 @@ A documentação Swagger pode ser encontrada nos seguintes endpoints:
 - **Documentação JSON**: [http://localhost:3000/docs/json](http://localhost:3000/docs/json)
 
 > [!NOTE]
+>
 > **Nota**: A porta deve refletir a configurada no arquivo `.env`.
 
 ## Exemplos de Uso da API
 
 ### Criar uma Tarefa
+
 ```bash
 curl --location 'http://localhost:3000/v1/tasks' \
 --header 'Authorization: Bearer <TOKEN>' \
@@ -123,12 +133,14 @@ curl --location 'http://localhost:3000/v1/tasks' \
 ```
 
 ### Listar Tarefas
+
 ```bash
 curl --location 'http://localhost:3000/v1/tasks' \
 --header 'Authorization: Bearer <TOKEN>'
 ```
 
 ### Autenticação
+
 ```bash
 curl --location 'http://localhost:3000/v1/auth/signin' \
 --header 'Content-Type: application/json' \
@@ -141,17 +153,21 @@ curl --location 'http://localhost:3000/v1/auth/signin' \
 ## Observações
 
 > [!IMPORTANT]
->1. **Prefixo de versão nas rotas**: Com exceção da documentação Swagger, todas as rotas estão versionadas. É necessário utilizar o prefixo `/v1/`.  
-   Exemplo: `http://localhost:3000/v1/tasks`
+>
+> 1.  **Prefixo de versão nas rotas**: Com exceção da documentação Swagger, todas as rotas estão versionadas. É necessário utilizar o prefixo `/v1/`.  
+>     Exemplo: `http://localhost:3000/v1/tasks`
 
 > [!IMPORTANT]
->2. **Rotas protegidas**: As rotas de gerenciamento de tarefas estão protegidas. É necessário autenticar-se utilizando as credenciais abaixo:
+>
+> 2. **Rotas protegidas**: As rotas de gerenciamento de tarefas estão protegidas. É necessário autenticar-se utilizando as credenciais abaixo:
 
-   ```json
-   {
-       "userName": "userAdmin",
-       "password": "adminPass"
-   }
-   ```
+```json
+{
+  "userName": "userAdmin",
+  "password": "adminPass"
+}
+```
+
 > [!NOTE]
->3. **Credenciais fixas**: As credenciais acima estão fixadas no banco e não podem ser alteradas via chamada.
+>
+> 3.  **Credenciais fixas**: As credenciais acima estão fixadas no banco e não podem ser alteradas via chamada.
