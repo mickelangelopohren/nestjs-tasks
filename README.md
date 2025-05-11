@@ -4,27 +4,27 @@
 
 Este projeto contém um CRUD de Tarefas com autenticação JWT. Foi desenvolvido utilizando **Nest.js**, **Prisma ORM** e **SQLite** como banco de dados.
 
-## Table of Contents
+## Sumário
 
 - [Descrição do Projeto](#descrição-do-projeto)
 - [Pré-requisitos](#pré-requisitos)
 - [Executando no ambiente local (sem Docker)](#executando-no-ambiente-local-sem-docker)
 - [Executando no ambiente local com Docker](#executando-no-ambiente-local-com-docker)
-- [Configuração do Arquivo `.env`](#configuração-do-arquivo-env)
+- [Configuração do Arquivo ENV](#configuração-do-arquivo-env)
 - [Executando os testes](#executando-os-testes)
 - [Documentação Swagger](#documentação-swagger)
 - [Exemplos de Uso da API](#exemplos-de-uso-da-api)
 - [Observações](#observações)
 - [Postman](#postman)
 
-## Pré-requisitos
+## Requisitos
 
 - **Node.js** versão 22
 - **Npm** (vem com o Node.js)
 - **Docker** (opcional)
 - **Docker-compose** (opcional)
 
-## Executando no ambiente local (sem Docker)
+## Executando no ambiente local sem Docker
 
 1. Clone o repositório:
 
@@ -75,7 +75,13 @@ Este projeto contém um CRUD de Tarefas com autenticação JWT. Foi desenvolvido
    cd nestjs-tasks
    ```
 
-3. Execute o comando abaixo para construir e iniciar a aplicação:
+3. Crie um arquivo `.env`. Você pode usar o arquivo `.env.example` como base:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+4. Execute o comando abaixo para construir e iniciar a aplicação:
    ```bash
    docker-compose up
    ```
